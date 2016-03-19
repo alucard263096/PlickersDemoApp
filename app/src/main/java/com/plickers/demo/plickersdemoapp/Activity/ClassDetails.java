@@ -1,8 +1,10 @@
 package com.plickers.demo.plickersdemoapp.Activity;
 
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -11,17 +13,40 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.plickers.demo.plickersdemoapp.Fragment.QuestionListFragment;
+import com.plickers.demo.plickersdemoapp.Helper.DatabaseHandler;
+import com.plickers.demo.plickersdemoapp.Objects.Question;
 import com.plickers.demo.plickersdemoapp.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+/*
+The majority of this class remains untouched from the original Android template. Any changes
+have been commentated.
+ */
+
 public class ClassDetails extends AppCompatActivity {
+
+
+    //private DatabaseHandler databaseHandler;
+    private ArrayList<Question> questions;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -43,6 +68,7 @@ public class ClassDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_class_details);
 
+        questions = new ArrayList<>();
         /*
         Receive data from class list selection
          */
@@ -51,8 +77,10 @@ public class ClassDetails extends AppCompatActivity {
 
         //Set the toolbar to the class name
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(className);
+        TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title); //Toolbar title
+        toolbarTitle.setText(className);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false); //Hide the default toolbar title
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -65,7 +93,136 @@ public class ClassDetails extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        retrieveClassroomData();
+    }
 
+    private void retrieveClassroomData(){
+        /*Potentially have a parameter for CourseID(section) and retrieve the JSON that corresponds
+        to the correct CourseID(section)
+         */
+        //this.deleteDatabase("classroom_data");
+        //databaseHandler = new DatabaseHandler(this);
+
+        String linkToClassroom = "http://plickers-interview.herokuapp.com/polls";
+        new retrieveClassroomJSON().execute(linkToClassroom);
+
+    }
+
+    /*
+    JSON retrieval task that is run in the background
+     */
+    private class retrieveClassroomJSON extends AsyncTask<String, Void, JSONArray> {
+        private Exception exception;
+        private ProgressDialog pDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(ClassDetails.this);
+            pDialog.setMessage("Getting Data ...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(true);
+            pDialog.show();
+
+        }
+
+        /*
+        Instead of creating an independent JSON Parser, I did the parsing in the doInBackground
+        and in onPostExecute methods so it is easier to see how the logic is taking place
+         */
+        protected JSONArray doInBackground(String... urls) {
+            InputStream inputStream = null;
+            String result = null;
+            HttpURLConnection urlConnection;
+            try {
+                URL url = new URL(urls[0]);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                // json is UTF-8 by default
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+                StringBuilder sb = new StringBuilder();
+
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                result = sb.toString();
+                urlConnection.disconnect();
+
+            } catch (Exception e) {
+                Log.e("URL ERROR", "getWebInfo: ", e);
+            } finally {
+                try {
+                    if (inputStream != null) inputStream.close();
+                } catch (Exception squish) {
+                }
+            }
+            try {
+                JSONArray jObject = new JSONArray(result);
+                return jObject;
+            } catch (Exception e) {
+                Log.e("ERROR", "getJsonInfo: ", e);
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(JSONArray jsonArray) {
+            try {
+                JSONArray jsonData = jsonArray;
+                for (int i = 0; i < jsonData.length(); i++) {
+                    String sectionId = jsonData.getJSONObject(i).getString("section");
+                    String questionId = jsonData.getJSONObject(i).getJSONObject("question").getString("id");
+                    String modified;
+                    //If there is no modified, the last touched date is created
+                    try {
+                        modified = jsonData.getJSONObject(i).getJSONObject("question").
+                                getString("modified");//get modified if it exists
+                    } catch (JSONException je) {
+                        modified = jsonData.getJSONObject(i).getJSONObject("question").
+                                getString("created");//if it wasn't modified get created
+                    }
+                    String body = jsonData.getJSONObject(i).getJSONObject("question").getString("body");
+                    JSONArray choices = jsonData.getJSONObject(i).getJSONObject("question").getJSONArray("choices"); //Will have to convert to String
+                    String image = "none";
+                    //If there is a image, store the link, else store "none"
+                    try {
+                        image = jsonData.getJSONObject(i).getJSONObject("question").getString("image");
+                    } catch (JSONException je) {
+                        image = "none";
+                    }
+
+                    questions.add(new Question(sectionId, questionId, modified, body,
+                            choices.toString(), image));
+
+                    //databaseHandler.addQuestion(new Question
+                    //      (sectionId, questionId, modified, body, choices.toString(), image));
+
+                }
+
+                pDialog.dismiss();
+
+                QuestionListFragment questionListFragment = (QuestionListFragment) getSupportFragmentManager()
+                        .findFragmentByTag("QuestionListFragment");
+                if (questionListFragment != null) {
+                    System.out.println("ITS NOT NULL");
+                    questionListFragment.refreshData(questions);
+                }
+
+                // Reading all contacts
+                //Log.d("Reading: ", "Reading all contacts..");
+                //List<Question> questions = databaseHandler.getAllQuestions();
+
+                //for (Question question : questions) {
+                //String log = "Id: "+question.getQuestion_id()+" ,Body: " + question.getBody();
+                //Log.d("QUESTION: ", log);
+                // }
+
+
+            } catch (Exception e) {
+                     Log.e("ERROR", "getJsonInfo: ", e);
+                }
+        }
     }
 
 
@@ -118,6 +275,9 @@ public class ClassDetails extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+            if(position == 0){
+                return QuestionListFragment.newInstance(questions);
+            }
             return PlaceholderFragment.newInstance(position + 1);
         }
 

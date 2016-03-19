@@ -17,6 +17,10 @@ import android.widget.TextView;
 import com.plickers.demo.plickersdemoapp.Fragment.ClassSelectionFragment;
 import com.plickers.demo.plickersdemoapp.R;
 
+/*
+The majority of this class remains untouched from the original Android template. Any changes
+have been commentated.
+ */
 public class ClassSelection extends AppCompatActivity {
 
     /**
