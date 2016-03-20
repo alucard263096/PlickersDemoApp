@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DateFormat;
+
 /**
  * Created by Ron on 3/18/2016.
  *
@@ -51,7 +53,7 @@ public class Question implements Parcelable {
     }
 
     public String getLast_modified(){
-        return this.last_modified;
+        return this.last_modified.substring(0,this.last_modified.indexOf('T')); //Get only the date
     }
 
     public void setLast_modified(String last_modified){

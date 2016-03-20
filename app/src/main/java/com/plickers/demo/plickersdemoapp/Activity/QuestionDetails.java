@@ -1,7 +1,8 @@
 package com.plickers.demo.plickersdemoapp.Activity;
 
-import android.app.ProgressDialog;
 import android.support.design.widget.TabLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -11,28 +12,18 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.plickers.demo.plickersdemoapp.Fragment.QuestionListFragment;
+import com.plickers.demo.plickersdemoapp.Fragment.QuestionFragment;
 import com.plickers.demo.plickersdemoapp.Objects.Question;
 import com.plickers.demo.plickersdemoapp.R;
 
-import java.util.ArrayList;
-
-/*
-The majority of this class remains untouched from the original Android template. Any changes
-have been commentated.
- */
-
-public class ClassDetails extends AppCompatActivity {
-
-
-
-    private ArrayList<Question> questions;
-    private int fragid = 0;
+public class QuestionDetails extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -43,7 +34,7 @@ public class ClassDetails extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ProgressDialog pDialog;
+    private Question selectedQuestion;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -52,21 +43,8 @@ public class ClassDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_class_details);
-
-        /*
-        Receive data from class list selection
-         */
-        Bundle bundle = getIntent().getExtras();
-        String className = bundle.getString("className");
-        questions = bundle.getParcelableArrayList("questions");
-
-        //Set the toolbar to the class name
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView toolbarTitle = (TextView) findViewById(R.id.toolbar_title); //Toolbar title
-        toolbarTitle.setText(className);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false); //Hide the default toolbar title
+        setContentView(R.layout.activity_question_details);
+        selectedQuestion = getIntent().getParcelableExtra("selectedQuestion");
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -79,6 +57,29 @@ public class ClassDetails extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+       }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_question_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -109,16 +110,12 @@ public class ClassDetails extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            /*Hard coded specifications for the demo stating that these features are not
-             enabled for the demo thus creating only one usable fragment
-              */
-            View rootView = inflater.inflate(R.layout.fragment_class_details, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_question_details, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText("Feature not supported in demo");
+            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;
         }
     }
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -135,26 +132,24 @@ public class ClassDetails extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position == 0){
-                return new QuestionListFragment().newInstance(questions);
+                return QuestionFragment.newInstance(selectedQuestion);
             }
             return PlaceholderFragment.newInstance(position + 1);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            // Show 2 total pages.
+            return 2;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "History";
+                    return "Question";
                 case 1:
-                    return "Planned";
-                case 2:
-                    return "Create New";
+                    return "Responses";
             }
             return null;
         }
