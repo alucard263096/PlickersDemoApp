@@ -1,5 +1,6 @@
 package com.plickers.demo.plickersdemoapp.Activity;
 
+import android.content.Context;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,17 +12,27 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.plickers.demo.plickersdemoapp.Fragment.QuestionFragment;
+import com.plickers.demo.plickersdemoapp.Fragment.ResponsesFragment;
+import com.plickers.demo.plickersdemoapp.Objects.Choice;
 import com.plickers.demo.plickersdemoapp.Objects.Question;
 import com.plickers.demo.plickersdemoapp.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class QuestionDetails extends AppCompatActivity {
 
@@ -35,6 +46,7 @@ public class QuestionDetails extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private Question selectedQuestion;
+    private Choice[] choices;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -45,6 +57,13 @@ public class QuestionDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_details);
         selectedQuestion = getIntent().getParcelableExtra("selectedQuestion");
+
+        try{
+            choices = Choice.parseChoices(selectedQuestion);
+        }
+        catch (JSONException je){
+            Log.e("JSON", je.toString());
+        }
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -57,6 +76,14 @@ public class QuestionDetails extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabEdit);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Edit not supported in demo", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
        }
 
 
@@ -112,10 +139,13 @@ public class QuestionDetails extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_question_details, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            textView.setText("Feature is currently unavailable"); //Failsafe message
             return rootView;
         }
     }
+
+
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -132,8 +162,13 @@ public class QuestionDetails extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position == 0){
-                return QuestionFragment.newInstance(selectedQuestion);
+                return QuestionFragment.newInstance(selectedQuestion, choices);
             }
+
+            if(position == 1){
+                return ResponsesFragment.newInstance(selectedQuestion, choices);
+            }
+
             return PlaceholderFragment.newInstance(position + 1);
         }
 

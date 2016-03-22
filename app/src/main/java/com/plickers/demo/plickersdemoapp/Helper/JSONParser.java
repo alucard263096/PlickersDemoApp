@@ -1,60 +1,58 @@
 package com.plickers.demo.plickersdemoapp.Helper;
 
-import android.util.Log;
+import com.plickers.demo.plickersdemoapp.Objects.Question;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.ArrayList;
 
 /**
- * Created by Admin on 3/19/2016.
+ * Parses the JSON file to create the Quesitons and return them back in an ArrayList
+ *
  */
 public class JSONParser {
 
-    public JSONParser(){
+    //Empty constructor
+    public JSONParser() {
 
     }
 
-    public JSONArray parseArray(String jsonURL){
-        InputStream inputStream = null;
-        String result = null;
-        HttpURLConnection urlConnection;
-        try {
-            URL url = new URL(jsonURL);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            inputStream = new BufferedInputStream(urlConnection.getInputStream());
-            // json is UTF-8 by default
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
-            StringBuilder sb = new StringBuilder();
-
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            result = sb.toString();
-            urlConnection.disconnect();
-
-        } catch (Exception e) {
-            Log.e("URL ERROR", "getWebInfo: ", e);
-        } finally {
+    public ArrayList<Question> parseJSONfile(JSONArray jsonArray) throws JSONException{
+        ArrayList<Question> questionArrayList = new ArrayList<>();
+        JSONArray jsonData = jsonArray;
+                /*
+                Loop through the array and store the appropriate data per question
+                 */
+        for (int i = 0; i < jsonData.length(); i++) {
+            String sectionId = jsonData.getJSONObject(i).getString("section");
+            String questionId = jsonData.getJSONObject(i).getJSONObject("question").
+                    getString("id");
+            String modified;
+            //If there is no modified, the last touched date is created
             try {
-                if (inputStream != null) inputStream.close();
-            } catch (Exception squish) {
+                modified = jsonData.getJSONObject(i).getJSONObject("question").
+                        getString("modified");//get modified if it exists
+            } catch (JSONException je) {
+                modified = jsonData.getJSONObject(i).getJSONObject("question").
+                        getString("created");//if it wasn't modified get created
             }
+            String body = jsonData.getJSONObject(i).getJSONObject("question").
+                    getString("body");
+            JSONArray choices = jsonData.getJSONObject(i).getJSONObject("question").
+                    getJSONArray("choices"); //Will have to convert to String
+            JSONArray responses = jsonData.getJSONObject(i).getJSONArray("responses");
+            String image = "none";
+            //If there is a image, store the link, else store "none"
+            try {
+                image = jsonData.getJSONObject(i).getJSONObject("question").getString("image");
+            } catch (JSONException je) {
+                image = "none";
+            }
+            Question question = new Question(sectionId, questionId, modified, body,
+                    choices.toString(), image, responses.toString());
+            questionArrayList.add(question); //Add the question created to the list
         }
-        try {
-            JSONArray jObject = new JSONArray(result);
-            return jObject;
-        } catch (Exception e) {
-            Log.e("ERROR", "getJsonInfo: ", e);
-            e.printStackTrace();
-        }
-        return null;
+        return questionArrayList;
     }
-
 }

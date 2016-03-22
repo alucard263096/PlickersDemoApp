@@ -18,8 +18,9 @@ import com.plickers.demo.plickersdemoapp.Fragment.ClassSelectionFragment;
 import com.plickers.demo.plickersdemoapp.R;
 
 /*
-The majority of this class remains untouched from the original Android template. Any changes
-have been commentated.
+Displays a tabbed activity that has the primary tab showing a
+list of courses for the user to select. The majority of this class remains untouched from
+the original Android template. Any changes have been commentated.
  */
 public class ClassSelection extends AppCompatActivity {
 

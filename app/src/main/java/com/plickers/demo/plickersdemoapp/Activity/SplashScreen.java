@@ -14,8 +14,11 @@ import android.widget.ImageView;
 
 import com.plickers.demo.plickersdemoapp.R;
 
+/*
+Displays the splash screen that is shown to the user when the app is first booted.
+This is where we could potentially have the login and other auth done.
+ */
 public class SplashScreen extends Activity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +33,7 @@ public class SplashScreen extends Activity {
     }
 
     /*
-    Method: animateLogo()
-    Description: Method called in onCreate to animate the Plickers logo toward the top of the
-    screen to divert user's attention to the authentication buttons
+    Performs the logo animation of moving from the center of the layout to the top
      */
     private void animateLogo(){
         ImageView logo = (ImageView) findViewById(R.id.logo);
@@ -45,9 +46,7 @@ public class SplashScreen extends Activity {
     }
 
     /*
-    Method: fadeInDemoButton()
-    Description: Method called in onCreate to fade in the button that prompts the user to sign in
-    (Begin the demo)
+    Method called in onCreate to fade in the button that prompts the user to sign in
      */
     private void fadeInDemoButton(){
         Button signInButton = (Button)findViewById(R.id.signInButton);
@@ -60,9 +59,9 @@ public class SplashScreen extends Activity {
     }
 
     /*
-    Method: transitionToClassScreen(View)
-    Description: This is the method called when the user decides to sign in(begin the demo). It
+    This is the method called when the user decides to sign in(begin the demo). It
     takes the view as the parameter.
+    @param view The view for the onClick to know which view is reference
      */
     public void transitionToClassScreen(View view){
         /*

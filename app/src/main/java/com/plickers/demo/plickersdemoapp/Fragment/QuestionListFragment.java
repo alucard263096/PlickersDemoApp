@@ -16,6 +16,7 @@ import android.widget.SimpleAdapter;
 
 import com.plickers.demo.plickersdemoapp.Activity.QuestionDetails;
 import com.plickers.demo.plickersdemoapp.Adapters.QuestionAdapter;
+import com.plickers.demo.plickersdemoapp.Objects.Choice;
 import com.plickers.demo.plickersdemoapp.Objects.Question;
 import com.plickers.demo.plickersdemoapp.R;
 
@@ -77,6 +78,7 @@ public class QuestionListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_question_list, container, false);
+        //Add the questions
         addQuestionList(view);
         return view;
     }

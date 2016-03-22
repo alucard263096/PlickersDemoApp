@@ -21,19 +21,21 @@ public class Question implements Parcelable {
     private String body;
     private String choices;
     private String image;
+    private String responses;
 
     public Question(){
 
     }
 
     public Question(String section_id, String question_id, String last_modified, String body,
-                    String choices, String image){
+                    String choices, String image, String responses){
         this.section_id = section_id;
         this.question_id = question_id;
         this.last_modified = last_modified;
         this.body = body;
         this.choices = choices;
         this.image = image;
+        this.responses = responses;
     }
 
     public String getSection_id(){
@@ -84,6 +86,14 @@ public class Question implements Parcelable {
         this.image = image;
     }
 
+    public String getResponses(){
+        return this.responses;
+    }
+
+    public void setResponses(String responses){
+        this.responses = responses;
+    }
+
 
     protected Question(Parcel in) {
         section_id = in.readString();
@@ -92,6 +102,7 @@ public class Question implements Parcelable {
         body = in.readString();
         choices = in.readString();
         image = in.readString();
+        responses = in.readString();
     }
 
     @Override
@@ -107,6 +118,7 @@ public class Question implements Parcelable {
         dest.writeString(body);
         dest.writeString(choices);
         dest.writeString(image);
+        dest.writeString(responses);
     }
 
     @SuppressWarnings("unused")

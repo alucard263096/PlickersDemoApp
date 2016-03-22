@@ -32,7 +32,6 @@ public class ClassDetails extends AppCompatActivity {
 
 
     private ArrayList<Question> questions;
-    private int fragid = 0;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -115,7 +114,9 @@ public class ClassDetails extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_class_details, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText("Feature not supported in demo");
+
             return rootView;
+
         }
     }
 
