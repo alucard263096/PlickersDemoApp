@@ -29,7 +29,7 @@ import java.util.ArrayList;
 /**
  * Displays a list of classes to the user for him/her to select and decide which course
  * to explore. For the sake of this demo, only one class "Demo 101" was added.
- * The majority of this class remains untouched from the original Android template.
+ * Components of this class remains untouched from the original Android template.
  * Any changes have been commentated.
  * A simple {@link Fragment} subclass.
  * Use the {@link ClassSelectionFragment#newInstance} factory method to
@@ -37,6 +37,9 @@ import java.util.ArrayList;
  */
 public class ClassSelectionFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_CLASSNAME = "className";
+    private static final String ARG_QUESTIONS = "questions";
+
     private String className;
     private ListView listView;
 
@@ -93,7 +96,7 @@ public class ClassSelectionFragment extends Fragment {
 
         /*
         Potential logic concerning which class we would want to go into more depth about would be
-        done here
+        done here.
          */
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -113,8 +116,8 @@ public class ClassSelectionFragment extends Fragment {
     private void launchDetailsActivity(ArrayList<Question> questionArrayList){
         Intent intent = new Intent(context, ClassDetails.class);
         Bundle bundle = new Bundle();
-        bundle.putString("className", className);
-        bundle.putParcelableArrayList("questions", questionArrayList);
+        bundle.putString(ARG_CLASSNAME, this.className);
+        bundle.putParcelableArrayList(ARG_QUESTIONS, questionArrayList);
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -92,7 +92,7 @@ public class ClassSelection extends AppCompatActivity {
               */
             View rootView = inflater.inflate(R.layout.fragment_management_selection, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText("Feature not supported in demo");
+            textView.setText(getResources().getString(R.string.feature_not_supported));
 
             return rootView;
         }

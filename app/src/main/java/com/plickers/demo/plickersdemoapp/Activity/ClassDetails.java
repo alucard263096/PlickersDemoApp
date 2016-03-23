@@ -29,7 +29,8 @@ have been commentated.
 
 public class ClassDetails extends AppCompatActivity {
 
-
+    private static final String ARG_CLASSNAME = "className";
+    private static final String ARG_QUESTIONS = "questions";
 
     private ArrayList<Question> questions;
 
@@ -57,8 +58,8 @@ public class ClassDetails extends AppCompatActivity {
         Receive data from class list selection
          */
         Bundle bundle = getIntent().getExtras();
-        String className = bundle.getString("className");
-        questions = bundle.getParcelableArrayList("questions");
+        String className = bundle.getString(ARG_CLASSNAME);
+        this.questions = bundle.getParcelableArrayList(ARG_QUESTIONS);
 
         //Set the toolbar to the class name
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -79,6 +80,7 @@ public class ClassDetails extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
     }
+
 
     /**
      * A placeholder fragment containing a simple view.
@@ -113,7 +115,7 @@ public class ClassDetails extends AppCompatActivity {
               */
             View rootView = inflater.inflate(R.layout.fragment_class_details, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText("Feature not supported in demo");
+            textView.setText(getResources().getString(R.string.feature_not_supported));
 
             return rootView;
 

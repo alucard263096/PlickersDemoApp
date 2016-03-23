@@ -14,21 +14,15 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Question"
+        android:text="@string/questionTextViewText"
         android:id="@+id/questionTextView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_margin="5dp" />
 
-    <ImageView
+    <com.felipecsl.gifimageview.library.GifImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/questionImageView"
-        android:layout_toEndOf="@+id/questionTextView"
-        android:layout_below="@+id/questionTextView"
-        android:layout_alignLeft="@+id/questionTextView"
-        android:layout_alignStart="@+id/questionTextView"
-        android:contentDescription="questionImage"
+        android:contentDescription="@string/questionImageViewtext"
         android:layout_weight="0.25" />
 
 

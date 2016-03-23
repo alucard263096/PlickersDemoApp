@@ -2,13 +2,14 @@ package com.plickers.demo.plickersdemoapp.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.plickers.demo.plickersdemoapp.Objects.Question;
+import com.plickers.demo.plickersdemoapp.Objects.Response;
 import com.plickers.demo.plickersdemoapp.R;
 
 import java.util.ArrayList;
@@ -16,17 +17,19 @@ import java.util.ArrayList;
 /**
  * Created by Admin on 3/19/2016.
  */
-public class QuestionAdapter extends ArrayAdapter<Question> {
+public class ResponsesAdapter extends ArrayAdapter<Response> {
 
     private final Context context;
-    private ArrayList<Question> data;
+    private ArrayList<Response> data;
     private final int layoutResourceId;
+    private final char correctAnswer;
 
-    public QuestionAdapter(Context context, int layoutResourceId, ArrayList<Question> data) {
+    public ResponsesAdapter(Context context, int layoutResourceId, ArrayList<Response> data, char correctAnswer) {
         super(context, layoutResourceId, data);
         this.context = context;
         this.data = data;
         this.layoutResourceId = layoutResourceId;
+        this.correctAnswer = correctAnswer;
     }
 
     @Override
@@ -40,8 +43,7 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
             row = inflater.inflate(layoutResourceId, parent, false);
 
             holder = new ViewHolder();
-            holder.textView1 = (TextView)row.findViewById(R.id.body);
-            holder.textView2 = (TextView)row.findViewById(R.id.modified);
+            holder.textView1 = (TextView)row.findViewById(R.id.studentResponse);
             row.setTag(holder);
         }
         else
@@ -49,11 +51,17 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
             holder = (ViewHolder)row.getTag();
         }
 
-        Question question = data.get(position);
 
-        holder.textView1.setText(question.getBody());
-        holder.textView2.setText(question.getLast_modified().
-                substring(0, question.getLast_modified().indexOf('T')));
+        Response response = data.get(position);
+
+        holder.textView1.setText(response.getStudent() + " - " + response.getAnswer());
+
+        if(response.getAnswer() == correctAnswer){
+                holder.textView1.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLightGreen));
+        }
+        else{
+                holder.textView1.setBackgroundColor(ContextCompat.getColor(context,R.color.colorLightRed));
+        }
 
         return row;
     }
@@ -64,9 +72,5 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
         TextView textView2;
     }
 
-    public void sortData(ArrayList<Question> data){
-        this.data = data;
-        notifyDataSetChanged();
-    }
 
 }

@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.plickers.demo.plickersdemoapp.Activity.MainActivity">
+    <item
+        android:id="@+id/action_datesort"
+        android:orderInCategory="100"
+        android:title="@string/datesort_text"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_bodysort"
+        android:orderInCategory="100"
+        android:title="@string/bodysort_text"
+        app:showAsAction="never" />
+</menu>

@@ -92,10 +92,29 @@
     </string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_class_selection">ClassSelection</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="feature_not_supported">Feature not supported in demo</string>
+    <string name="edit_not_supported">Edit not supported in demo</string>
     <string name="title_activity_class_details">ClassDetails</string>
     <string name="title_activity_question_details">QuestionDetails</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="app_internet_requirement">This app needs Internet Connectivity</string>
+    <string name="begin_demo">Begin Demo</string>
+    <string name="logo">Logo</string>
+    <string name="studentPopUptext">Student:</string>
+    <string name="answerPopUpText">Answer:</string>
+    <string name="cardPopUpText">Card Used:</string>
+    <string name="questionTextViewText">Question</string>
+    <string name="questionImageViewtext">questionImage</string>
+    <string name="numStudentsText">Number of Students:</string>
+    <string name="numAText">A Responses:</string>
+    <string name="numCorrectText">Correct Responses:</string>
+    <string name="numBText">B Responses:</string>
+    <string name="numWrongText">Wrong Responses:</string>
+    <string name="numCText">C Responses:</string>
+    <string name="percentRightText">Percent of Class Right:</string>
+    <string name="numDText">D Responses:</string>
+    <string name="modifiedText">Last Modified:</string>
+    <string name="datesort_text">Sort By Date</string>
+    <string name="bodysort_text">Sort By Body</string>
 </resources>

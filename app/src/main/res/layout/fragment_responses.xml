@@ -5,35 +5,91 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:id="@+id/responsesLinearLayout"
         tools:context="com.plickers.demo.plickersdemoapp.Fragment.ResponsesFragment">
 
-        <!-- TODO: Update blank fragment layout -->
-
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Number of Students: "
-            android:id="@+id/numStudents"
-            android:layout_gravity="left|top"
-            android:layout_margin="15dp" />
+            android:layout_margin="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Correct Responses: "
-            android:id="@+id/numCorrect"
-            android:layout_gravity="left|top"
-            android:layout_margin="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/numStudentsText"
+                android:id="@+id/numStudents"
+                android:layout_gravity="start|top"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wrong Responses: "
-            android:id="@+id/numWrong"
-            android:layout_margin="15dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/numAText"
+                android:id="@+id/numA"
+                android:layout_marginStart="15dp"
+                android:layout_above="@+id/numCorrect"
+                android:layout_alignParentEnd="true" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/numCorrectText"
+                android:id="@+id/numCorrect"
+                android:layout_gravity="start|top"
+                android:layout_below="@+id/numStudents"
+                android:layout_alignStart="@+id/numStudents"
+                android:layout_marginTop="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/numBText"
+                android:id="@+id/numB"
+                android:layout_below="@+id/numA"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="15dp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/numWrongText"
+                android:id="@+id/numWrong"
+                android:layout_alignTop="@+id/numC"
+                android:layout_alignParentStart="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/numCText"
+                android:id="@+id/numC"
+                android:layout_below="@+id/numB"
+                android:layout_alignEnd="@+id/numB"
+                android:layout_marginTop="15dp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/percentRightText"
+                android:id="@+id/percentRight"
+                android:layout_alignTop="@+id/numD" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/numDText"
+                android:id="@+id/numD"
+                android:layout_below="@+id/numC"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="15dp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 

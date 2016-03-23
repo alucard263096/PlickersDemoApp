@@ -1,11 +1,9 @@
 package com.plickers.demo.plickersdemoapp.Activity;
 
-import android.content.Context;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,17 +11,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.Button;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.plickers.demo.plickersdemoapp.Fragment.QuestionFragment;
 import com.plickers.demo.plickersdemoapp.Fragment.ResponsesFragment;
@@ -31,7 +23,6 @@ import com.plickers.demo.plickersdemoapp.Objects.Choice;
 import com.plickers.demo.plickersdemoapp.Objects.Question;
 import com.plickers.demo.plickersdemoapp.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
 public class QuestionDetails extends AppCompatActivity {
@@ -47,6 +38,7 @@ public class QuestionDetails extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private Question selectedQuestion;
     private Choice[] choices;
+    private static final String ARG_SELECTED_QUESTION = "selectedQuestion";
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -56,10 +48,10 @@ public class QuestionDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_details);
-        selectedQuestion = getIntent().getParcelableExtra("selectedQuestion");
+        this.selectedQuestion = getIntent().getParcelableExtra(ARG_SELECTED_QUESTION);
 
         try{
-            choices = Choice.parseChoices(selectedQuestion);
+            choices = Choice.parseChoices(this.selectedQuestion);
         }
         catch (JSONException je){
             Log.e("JSON", je.toString());
@@ -80,34 +72,11 @@ public class QuestionDetails extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Edit not supported in demo", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, getResources().getString(R.string.edit_not_supported), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
        }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_question_details, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     /**
      * A placeholder fragment containing a simple view.
@@ -139,7 +108,7 @@ public class QuestionDetails extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_question_details, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText("Feature is currently unavailable"); //Failsafe message
+            textView.setText(getResources().getString(R.string.feature_not_supported)); //Failsafe message
             return rootView;
         }
     }

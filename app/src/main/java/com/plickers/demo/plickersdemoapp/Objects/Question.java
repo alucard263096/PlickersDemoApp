@@ -1,10 +1,9 @@
 package com.plickers.demo.plickersdemoapp.Objects;
 
-import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.DateFormat;
+import java.util.Comparator;
 
 /**
  * Created by Ron on 3/18/2016.
@@ -55,7 +54,7 @@ public class Question implements Parcelable {
     }
 
     public String getLast_modified(){
-        return this.last_modified.substring(0,this.last_modified.indexOf('T')); //Get only the date
+        return this.last_modified; //Get only the date
     }
 
     public void setLast_modified(String last_modified){
@@ -94,6 +93,27 @@ public class Question implements Parcelable {
         this.responses = responses;
     }
 
+    public static Comparator<Question> questionBodyComparator = new Comparator<Question>() {
+
+        public int compare(Question q1, Question q2) {
+            String questionBody1 = q1.getBody();
+            String questionBody2 = q2.getBody();
+
+            //descending order
+            return questionBody1.compareTo(questionBody2);
+
+        }};
+
+    public static Comparator<Question> questionDateComparator = new Comparator<Question>() {
+
+        public int compare(Question q1, Question q2) {
+
+            String dateQuestion1 = q1.getLast_modified();
+            String dateQuestion2 = q2.getLast_modified();
+
+
+            return dateQuestion2.compareTo(dateQuestion1);
+	    }};
 
     protected Question(Parcel in) {
         section_id = in.readString();

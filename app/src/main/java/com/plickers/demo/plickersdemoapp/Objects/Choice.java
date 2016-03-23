@@ -23,9 +23,10 @@ public class Choice implements Parcelable {
 
     }
 
-    public Choice(String body, Boolean correct){
+    public Choice(String body, Boolean correct, char letter){
         this.body = body;
         this.correct = correct;
+        this.letter = letter;
     }
 
     public String getBody(){
@@ -55,15 +56,26 @@ public class Choice implements Parcelable {
     public static Choice[] parseChoices(Question selectedQuestion) throws JSONException {
         JSONArray choices = new JSONArray(selectedQuestion.getChoices());
         Choice[] choicesArray = new Choice[choices.length()];
+
+        //Create the choices
         for(int i = 0; i<choices.length(); i++){
             String body = choices.getJSONObject(i).getString("body");
             Boolean answer = choices.getJSONObject(i).getBoolean("correct");
-            choicesArray[i] = new Choice(body,answer);
+            int letter = 'A' + i; //Assign a character letter for the answer
+            choicesArray[i] = new Choice(body,answer, (char)letter);
         }
-        for(int i = 0; i<choicesArray.length; i++){
-            int choice = 'A' + i;
-            choicesArray[i].setLetter((char)choice);
+
+        /*
+        Put one HARDCODED answer if there were no choices uploaded
+         */
+        if(choices.length() == 0){
+            String body = "No choices were uploaded"; //Hardcoded answer
+            Boolean answer = null; //null for correctness
+            Choice[] tempChoicesArray = new Choice[1]; //One answer
+            tempChoicesArray[0] = new Choice(body,answer, ' ');
+            choicesArray = tempChoicesArray;
         }
+
         return choicesArray;
     }
 

@@ -1,39 +1,29 @@
 package com.plickers.demo.plickersdemoapp.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.plickers.demo.plickersdemoapp.Activity.QuestionDetails;
-import com.plickers.demo.plickersdemoapp.Activity.StudentResponseDetails;
 import com.plickers.demo.plickersdemoapp.Objects.Choice;
 import com.plickers.demo.plickersdemoapp.Objects.Question;
 import com.plickers.demo.plickersdemoapp.Objects.Response;
 import com.plickers.demo.plickersdemoapp.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -55,8 +45,6 @@ public class ResponsesFragment extends Fragment {
     private Context context;
     private Question selectedQuestion;
     private Choice[] choices;
-
-    private OnFragmentInteractionListener mListener;
 
     public ResponsesFragment() {
         // Required empty public constructor
@@ -114,6 +102,21 @@ public class ResponsesFragment extends Fragment {
         return linearLayout;
     }
 
+    private Choice findAnswer(){
+        /*
+            Assign null if no correct value is given
+        */
+        for(Choice c: choices){
+            if(c.getCorrect() == null){
+                return c;
+            }
+            else if(c.getCorrect()){
+                return c;
+            }
+        }
+        return null;
+    }
+
     private void addResponses(View view, LinearLayout linearLayout) {
         Response[] responses = null;
         try{
@@ -122,60 +125,100 @@ public class ResponsesFragment extends Fragment {
         catch (JSONException je){
             Log.e("JSON", je.toString());
         }
-        Choice answer = null;
-        for(Choice c: choices){
-            if(c.getCorrect()){
-                answer = c;
-            }
-        }
+
+
+        Choice answer = findAnswer();
 
         int correctResponses = 0;
+        int aResponses = 0;
+        int bResponses = 0;
+        int cResponses = 0;
+        int dResponses = 0;
 
         for(Response x: responses){
-
             TextView textView = new TextView(context);
-            if(x.getAnswer() == answer.getLetter()){
-                textView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLightGreen));
-                correctResponses++;
+            final char studentAnswer = x.getAnswer();
+            switch(studentAnswer){
+                case 'A':
+                    aResponses++;
+                    break;
+                case 'B':
+                    bResponses++;
+                    break;
+                case 'C':
+                    cResponses++;
+                    break;
+                case 'D':
+                    dResponses++;
+                    break;
+                default:
+                    break;
             }
+
+
+            if(answer.getCorrect() == null) {}
             else{
-                textView.setBackgroundColor(ContextCompat.getColor(context,R.color.colorLightRed));
+                if(studentAnswer == answer.getLetter()){
+                    textView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLightGreen));
+                    correctResponses++;
+                }
+                else{
+                    textView.setBackgroundColor(ContextCompat.getColor(context,R.color.colorLightRed));
+                }
             }
             textView.setTextSize(15);
             textView.setPadding(10, 10, 10, 10);
-            String studentResponseDetails = x.getStudent() + " - " + x.getAnswer() +
-                    " - Card Used: " + x.getCard();
+            final String studentName = x.getStudent();
+            final int studentCard = x.getCard();
+            String studentResponseDetails =  studentName+ " - " + studentAnswer;
             textView.setText(studentResponseDetails);
-
-            /*
             textView.setOnClickListener(new View.OnClickListener() {
-
                 @Override
                 public void onClick(View v) {
-                    //initiatePopupWindow();
+                    initiatePopupWindow(studentName, studentAnswer, studentCard);
                 }
             });
-            */
+
             linearLayout.addView(textView);
         }
 
+        setClassStats(view, responses, answer, correctResponses, aResponses,
+                bResponses, cResponses, dResponses);
+
+    }
+
+    private void setClassStats(View view, Response[] responses, Choice answer,
+                               int correctResponses, int aResponses, int bResponses,
+                               int cResponses, int dResponses) {
         TextView numStudents = (TextView) view.findViewById(R.id.numStudents);
         numStudents.append(String.valueOf(responses.length));
 
+        if(answer.getCorrect() == null) {}
+        else{
         TextView numCorrect = (TextView) view.findViewById(R.id.numCorrect);
         numCorrect.append(String.valueOf(correctResponses));
 
         TextView numWrong = (TextView) view.findViewById(R.id.numWrong);
         numWrong.append(String.valueOf(responses.length - correctResponses));
-    }
 
+        TextView percentageRight = (TextView) view.findViewById(R.id.percentRight);
+        double tempPercentageRight = (double) correctResponses / (double) responses.length * 100;
+        percentageRight.append(String.valueOf(Math.round(tempPercentageRight)) + "%");
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        TextView numA = (TextView) view.findViewById(R.id.numA);
+        numA.append(String.valueOf(aResponses));
+
+        TextView numB = (TextView) view.findViewById(R.id.numB);
+        numB.append(String.valueOf(bResponses));
+
+        TextView numC = (TextView) view.findViewById(R.id.numC);
+        numC.append(String.valueOf(cResponses));
+
+        TextView numD = (TextView) view.findViewById(R.id.numD);
+        numD.append(String.valueOf(dResponses));
         }
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -186,30 +229,16 @@ public class ResponsesFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
     /*
     Create popup for Student Details
     Source: http://mobilemancer.com/2011/01/08/popup-window-in-android/
      */
     private PopupWindow pw;
-    public void initiatePopupWindow() {
+
+    public void initiatePopupWindow(String studentName, char studentAnswer, int studentCard) {
         try {
             //We need to get the instance of the LayoutInflater, use the context of this activity
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -218,11 +247,25 @@ public class ResponsesFragment extends Fragment {
                     (ViewGroup) getView().findViewById(R.id.popup_element));
             // create a 300px width and 470px height PopupWindow
             pw = new PopupWindow(layout);
+            pw.setBackgroundDrawable(new BitmapDrawable(null, ""));
+            pw.setOutsideTouchable(true);
+
+            TextView nameTextView = (TextView) layout.findViewById(R.id.studentPopUp);
+            nameTextView.append(studentName);
+
+            TextView answerTextView = (TextView) layout.findViewById(R.id.answerPopUp);
+            String curText = answerTextView.getText().toString();
+            answerTextView.setText(curText + studentAnswer);
+
+            TextView cardTextView = (TextView) layout.findViewById(R.id.cardPopUp);
+            cardTextView.append(String.valueOf(studentCard));
+
+
             pw.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
             pw.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
             // display the popup in the center
             pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
-            TextView mResultText = (TextView) layout.findViewById(R.id.server_status_text);
+
 
 
 

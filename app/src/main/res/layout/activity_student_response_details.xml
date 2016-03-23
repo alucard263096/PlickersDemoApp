@@ -3,26 +3,27 @@
     android:id="@+id/popup_element"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#444444"
-    android:padding="10px"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="Student: " />
+        android:id="@+id/studentPopUp"
+        android:text="@string/studentPopUptext" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="Answer: " />
+        android:id="@+id/answerPopUp"
+        android:text="@string/answerPopUpText" />
 
-    <TextView android:id="@+id/server_status_text"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Card: "
-        android:paddingLeft="10sp" />
+        android:id="@+id/cardPopUp"
+        android:text="@string/cardPopUpText"
+    />
 
 </LinearLayout>

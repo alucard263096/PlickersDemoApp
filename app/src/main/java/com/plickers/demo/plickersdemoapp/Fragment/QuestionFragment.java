@@ -3,7 +3,6 @@ package com.plickers.demo.plickersdemoapp.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -13,20 +12,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.felipecsl.gifimageview.library.GifImageView;
 import com.plickers.demo.plickersdemoapp.Objects.Choice;
 import com.plickers.demo.plickersdemoapp.Objects.Question;
-import com.plickers.demo.plickersdemoapp.Objects.Response;
 import com.plickers.demo.plickersdemoapp.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -48,9 +45,7 @@ public class QuestionFragment extends Fragment {
     private Question selectedQuestion;
     private Choice[] choices;
     private TextView questionData;
-    private ImageView questionImage;
-
-    private OnFragmentInteractionListener mListener;
+    private GifImageView questionImage;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -95,10 +90,11 @@ public class QuestionFragment extends Fragment {
         questionData.setText(selectedQuestion.getBody());
 
         //Set the question Image
-        questionImage = (ImageView) view.findViewById(R.id.questionImageView);
+        questionImage = (GifImageView) view.findViewById(R.id.questionImageView);
         new DownloadImageTask(questionImage)
                 .execute(selectedQuestion.getImage());
 
+        questionImage.startAnimation();
         //Add textviews for each of the choices
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.questionLinearLayout);
         addChoices(linearLayout);
@@ -116,7 +112,8 @@ public class QuestionFragment extends Fragment {
             TextView textView = new TextView(context);
 
             //Set the color of the textview
-            if(choices[i].getCorrect()){
+            if(choices[i].getCorrect() == null) {} //No color if no answer
+            else if(choices[i].getCorrect()){
                 //Green if right
                 textView.setBackgroundColor(ContextCompat.getColor
                         (context, R.color.colorLightGreen));
@@ -126,12 +123,14 @@ public class QuestionFragment extends Fragment {
                 textView.setBackgroundColor(ContextCompat.getColor(context,R.color.colorLightRed));
             }
 
-            textView.setTextSize(30);
+            textView.setTextSize(15);
             textView.setPadding(10, 10, 10, 10);
             String answer = choices[i].getLetter() + ": " + choices[i].getBody(); //Ex) A: Answer
             textView.setText(answer);
+
             linearLayout.addView(textView);
         }
+
     }
 
     @Override
@@ -143,58 +142,67 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
 
     /*
     Class to download the question images
-    Source: http://stackoverflow.com/questions/2471935/how-to-load-an-imageview-by-url-in-android
+    Sources: http://stackoverflow.com/questions/2471935/how-to-load-an-imageview-by-url-in-android
+    https://github.com/felipecsl/GifImageView
      */
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
+    private class DownloadImageTask extends AsyncTask<String, Void, byte[]> {
+        GifImageView bmImage;
 
-        public DownloadImageTask(ImageView bmImage) {
+
+        private byte[] readBytes(InputStream inputStream) throws IOException {
+            // this dynamically extends to take the bytes you read
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+
+            // this is storage overwritten on each iteration with bytes
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+
+            // we need to know how may bytes were read to write them to the byteBuffer
+            int len = 0;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+
+            // and then we can return your byte array.
+            return byteBuffer.toByteArray();
+        }
+
+        public DownloadImageTask(GifImageView bmImage) {
             this.bmImage = bmImage;
         }
 
-        protected Bitmap doInBackground(String... urls) {
+        protected byte[] doInBackground(String... urls) {
             String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
+            byte[] bytes = null;
             try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
+                bytes = readBytes(in);
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
-            return mIcon11;
+            return bytes;
         }
 
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
+        protected void onPostExecute(byte[] result) {
+            try{//Try to set the gif
+                bmImage.setBytes(result);
+                bmImage.startAnimation();
+            }
+            catch (ArithmeticException ae){ //If it is not a gif
+                Bitmap bitmap = BitmapFactory.decodeByteArray(result , 0, result.length);
+                bmImage.setImageBitmap(bitmap);
+            }
+            catch ( NullPointerException npe ){ //No byte data means no image
+                bmImage.setImageBitmap(null);
+            }
+
         }
     }
 }

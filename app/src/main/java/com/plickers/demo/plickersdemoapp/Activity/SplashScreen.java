@@ -1,7 +1,10 @@
 package com.plickers.demo.plickersdemoapp.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -11,6 +14,7 @@ import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.plickers.demo.plickersdemoapp.R;
 
@@ -58,6 +62,13 @@ public class SplashScreen extends Activity {
         signInButton.startAnimation(animation);
     }
 
+    public boolean isOnline() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    }
+
     /*
     This is the method called when the user decides to sign in(begin the demo). It
     takes the view as the parameter.
@@ -67,9 +78,15 @@ public class SplashScreen extends Activity {
         /*
         Potential authentication code goes here
          */
+        if(isOnline()){
         Intent i = new Intent(this, ClassSelection.class);
         startActivity(i);
         finish();
+        }
+        else{
+            Toast.makeText(SplashScreen.this, getString(R.string.app_internet_requirement),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
