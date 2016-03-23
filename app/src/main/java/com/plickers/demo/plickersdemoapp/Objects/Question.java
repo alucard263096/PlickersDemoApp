@@ -6,11 +6,7 @@ import android.os.Parcelable;
 import java.util.Comparator;
 
 /**
- * Created by Ron on 3/18/2016.
- *
- * The purpose of this class is to have all the details and data related to the individual question
- * in one object
- *
+ * Has all the details and data related to the individual question in one object
  */
 public class Question implements Parcelable {
 
@@ -22,12 +18,12 @@ public class Question implements Parcelable {
     private String image;
     private String responses;
 
-    public Question(){
+    public Question() {
 
     }
 
     public Question(String section_id, String question_id, String last_modified, String body,
-                    String choices, String image, String responses){
+                    String choices, String image, String responses) {
         this.section_id = section_id;
         this.question_id = question_id;
         this.last_modified = last_modified;
@@ -37,59 +33,59 @@ public class Question implements Parcelable {
         this.responses = responses;
     }
 
-    public String getSection_id(){
+    public String getSection_id() {
         return this.section_id;
     }
 
-    public void setSection_id(String section_id){
+    public void setSection_id(String section_id) {
         this.section_id = section_id;
     }
 
-    public String getQuestion_id(){
+    public String getQuestion_id() {
         return this.question_id;
     }
 
-    public void setQuestion_id(String question_id){
+    public void setQuestion_id(String question_id) {
         this.question_id = question_id;
     }
 
-    public String getLast_modified(){
+    public String getLast_modified() {
         return this.last_modified; //Get only the date
     }
 
-    public void setLast_modified(String last_modified){
+    public void setLast_modified(String last_modified) {
         this.last_modified = last_modified;
     }
 
-    public String getBody(){
+    public String getBody() {
         return this.body;
     }
 
-    public void setBody(String body){
+    public void setBody(String body) {
         this.body = body;
     }
 
-    public String getChoices(){
+    public String getChoices() {
         return this.choices;
     }
 
-    public void setChoices(String choices){
+    public void setChoices(String choices) {
         this.choices = choices;
     }
 
-    public String getImage(){
+    public String getImage() {
         return this.image;
     }
 
-    public void setImage(String image){
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public String getResponses(){
+    public String getResponses() {
         return this.responses;
     }
 
-    public void setResponses(String responses){
+    public void setResponses(String responses) {
         this.responses = responses;
     }
 
@@ -102,7 +98,8 @@ public class Question implements Parcelable {
             //descending order
             return questionBody1.compareTo(questionBody2);
 
-        }};
+        }
+    };
 
     public static Comparator<Question> questionDateComparator = new Comparator<Question>() {
 
@@ -113,7 +110,8 @@ public class Question implements Parcelable {
 
 
             return dateQuestion2.compareTo(dateQuestion1);
-	    }};
+        }
+    };
 
     protected Question(Parcel in) {
         section_id = in.readString();

@@ -9,7 +9,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 /**
- * Created by Admin on 3/20/2016.
+ * Has all the details related to a question response in one object
  */
 public class Response implements Parcelable {
 
@@ -17,57 +17,64 @@ public class Response implements Parcelable {
     private char answer;
     private int card;
 
-    public Response(){
+    public Response() {
 
     }
 
-    public Response(String student, char answer, int card){
+    public Response(String student, char answer, int card) {
         this.student = student;
         this.answer = answer;
         this.card = card;
     }
 
-    public String getStudent(){
+    public String getStudent() {
         return this.student;
     }
 
-    public void setStudent(String student){
+    public void setStudent(String student) {
         this.student = student;
     }
 
-    public char getAnswer(){
+    public char getAnswer() {
         return this.answer;
     }
 
-    public void setAnswer(char answer){
+    public void setAnswer(char answer) {
         this.answer = answer;
     }
 
-    public int getCard(){
+    public int getCard() {
         return this.card;
     }
 
-    public void setCard(int card){
+    public void setCard(int card) {
         this.card = card;
     }
 
+    /**
+     * Parses the JSON file and returns back an array of the responses
+     *
+     * @param selectedQuestion  The question the user had selected
+     * @return Array of the Responses parsed from JSON
+     * @throws JSONException
+     */
     public static Response[] parseResponses(Question selectedQuestion) throws JSONException {
         JSONArray responses = new JSONArray(selectedQuestion.getResponses());
         ArrayList<Response> responseArrayList = new ArrayList<>();
-        for(int i = 0; i<responses.length(); i++){
+        for (int i = 0; i < responses.length(); i++) {
             //Get the Student name(email)
             String student = responses.getJSONObject(i).getString("student");
 
             //Get the answer recorded
             String answer = responses.getJSONObject(i).getString("answer");
             char answerchar = ' '; //No answer was recorded
-            if(answer.length() == 1){
+            if (answer.length() == 1) {
                 answerchar = answer.charAt(0);
             }
 
             //Get the card used
             int card = responses.getJSONObject(i).getInt("card");
-            responseArrayList.add(new Response(student,answerchar, card));
+            responseArrayList.add(new Response(student, answerchar, card));
         }
         return responseArrayList.toArray(new Response[responseArrayList.size()]);
     }

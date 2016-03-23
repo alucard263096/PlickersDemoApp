@@ -1,17 +1,15 @@
 package com.plickers.demo.plickersdemoapp.Activity;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 import com.plickers.demo.plickersdemoapp.Fragment.ClassSelectionFragment;
@@ -90,7 +88,8 @@ public class ClassSelection extends AppCompatActivity {
             /*Hard coded specifications for the demo stating that these features are not
              enabled for the demo thus creating only one usable fragment
               */
-            View rootView = inflater.inflate(R.layout.fragment_management_selection, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_management_selection,
+                    container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(getResources().getString(R.string.feature_not_supported));
 
@@ -117,7 +116,7 @@ public class ClassSelection extends AppCompatActivity {
             Position == 0 is hard coded for the sake of this demo. The other tabs are hard coded
             to "feature not supported in demo" as explained above.
              */
-            if(position == 0){
+            if (position == 0) {
                 return ClassSelectionFragment.newInstance();
             }
 

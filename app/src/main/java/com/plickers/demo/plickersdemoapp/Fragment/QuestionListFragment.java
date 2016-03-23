@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
+ * Displays a list of questions to the user which can be sorted by body or by date
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link QuestionListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link QuestionListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -34,11 +32,10 @@ public class QuestionListFragment extends Fragment {
     private static final String QUESTION_LIST = "questionlist";
     private static final String ARG_SELECTED_QUESTION = "selectedQuestion";
 
-    private ArrayList<Question> questionList;
-    private QuestionAdapter questionAdapter;
-    private ListView listView;
-
-    private Context context;
+    private ArrayList<Question> mQuestionList;
+    private QuestionAdapter mQuestionAdapter;
+    private ListView mListView;
+    private Context mContext;
 
     public QuestionListFragment() {
         // Required empty public constructor
@@ -51,7 +48,6 @@ public class QuestionListFragment extends Fragment {
      * @param questionArrayList questionList
      * @return A new instance of fragment QuestionListFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static QuestionListFragment newInstance(ArrayList<Question> questionArrayList) {
         QuestionListFragment fragment = new QuestionListFragment();
         Bundle args = new Bundle();
@@ -67,7 +63,7 @@ public class QuestionListFragment extends Fragment {
         setHasOptionsMenu(true); //Set the options menu
 
         if (getArguments() != null) {
-            questionList = getArguments().getParcelableArrayList(QUESTION_LIST);
+            mQuestionList = getArguments().getParcelableArrayList(QUESTION_LIST);
         }
     }
 
@@ -81,10 +77,10 @@ public class QuestionListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_datesort:
-                sortbyDate(questionList);
+                sortbyDate(mQuestionList);
                 return true;
             case R.id.action_bodysort:
-                sortbyBody(questionList);
+                sortbyBody(mQuestionList);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -101,37 +97,54 @@ public class QuestionListFragment extends Fragment {
         return view;
     }
 
-    private void addQuestionList(View view){
-        listView = (ListView) view.findViewById(R.id.questionListView);
-        questionAdapter = new QuestionAdapter(context, R.layout.question_list_item, questionList);
-        listView.setAdapter(questionAdapter);
+    /**
+     * Adds the list of questions to the layout so that the user can see the question bodies and
+     * click on one of the questions to go into more detail
+     *
+     * @param view The view that has the questionListView
+     */
+    private void addQuestionList(View view) {
+        mListView = (ListView) view.findViewById(R.id.questionListView);
+        mQuestionAdapter = new QuestionAdapter(mContext, R.layout.question_list_item,
+                mQuestionList);
+        mListView.setAdapter(mQuestionAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Question selectedQuestion = (Question) listView.getItemAtPosition(position);
-                Intent intent = new Intent(context, QuestionDetails.class);
+                Question selectedQuestion = (Question) mListView.getItemAtPosition(position);
+                Intent intent = new Intent(mContext, QuestionDetails.class);
                 intent.putExtra(ARG_SELECTED_QUESTION, selectedQuestion);
                 startActivity(intent);
             }
         });
     }
 
-    private void sortbyDate(ArrayList<Question> questions){
+    /**
+     * Sorts the questions by date
+     *
+     * @param questions The list of questions
+     */
+    private void sortbyDate(ArrayList<Question> questions) {
         Collections.sort(questions, Question.questionDateComparator);
-        questionAdapter.sortData(questions);
+        mQuestionAdapter.sortData(questions);
     }
 
-    private void sortbyBody(ArrayList<Question> questions){
+    /**
+     * Sorts the questions by Body
+     *
+     * @param questions The list of questions
+     */
+    private void sortbyBody(ArrayList<Question> questions) {
         Collections.sort(questions, Question.questionBodyComparator);
-        questionAdapter.sortData(questions);
+        mQuestionAdapter.sortData(questions);
     }
 
 
     @Override
     public void onAttach(Context context) {
-        this.context = context;
+        this.mContext = context;
         super.onAttach(context);
     }
 

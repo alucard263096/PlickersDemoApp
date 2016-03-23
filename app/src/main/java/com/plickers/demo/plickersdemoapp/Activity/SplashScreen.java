@@ -39,21 +39,21 @@ public class SplashScreen extends Activity {
     /*
     Performs the logo animation of moving from the center of the layout to the top
      */
-    private void animateLogo(){
+    private void animateLogo() {
         ImageView logo = (ImageView) findViewById(R.id.logo);
         int height = logo.getDrawable().getIntrinsicHeight();
         height *= -1;
-        TranslateAnimation toTop = new TranslateAnimation(0, 0 , 0, height );
+        TranslateAnimation toTop = new TranslateAnimation(0, 0, 0, height);
         toTop.setDuration(2000);
         toTop.setFillAfter(true);
         logo.startAnimation(toTop);
     }
 
     /*
-    Method called in onCreate to fade in the button that prompts the user to sign in
+    Fades in the button that prompts the user to sign in
      */
-    private void fadeInDemoButton(){
-        Button signInButton = (Button)findViewById(R.id.signInButton);
+    private void fadeInDemoButton() {
+        Button signInButton = (Button) findViewById(R.id.signInButton);
         Animation fadeIn = new AlphaAnimation(0, 1);
         fadeIn.setInterpolator(new AccelerateInterpolator());
         fadeIn.setDuration(2500);
@@ -62,6 +62,11 @@ public class SplashScreen extends Activity {
         signInButton.startAnimation(animation);
     }
 
+    /**
+     * Checks if the phone is connected to the internet
+     *
+     * @return Boolean true if the phone has network connectivity
+     */
     public boolean isOnline() {
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -70,20 +75,18 @@ public class SplashScreen extends Activity {
     }
 
     /*
-    This is the method called when the user decides to sign in(begin the demo). It
-    takes the view as the parameter.
+    Begins the demo assuming the app has network connectivity else a new toast is made
     @param view The view for the onClick to know which view is reference
      */
-    public void transitionToClassScreen(View view){
+    public void transitionToClassScreen(View view) {
         /*
         Potential authentication code goes here
          */
-        if(isOnline()){
-        Intent i = new Intent(this, ClassSelection.class);
-        startActivity(i);
-        finish();
-        }
-        else{
+        if (isOnline()) {
+            Intent i = new Intent(this, ClassSelection.class);
+            startActivity(i);
+            finish();
+        } else {
             Toast.makeText(SplashScreen.this, getString(R.string.app_internet_requirement),
                     Toast.LENGTH_SHORT).show();
         }

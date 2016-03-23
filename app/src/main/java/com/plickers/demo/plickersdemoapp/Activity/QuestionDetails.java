@@ -1,20 +1,18 @@
 package com.plickers.demo.plickersdemoapp.Activity;
 
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 import com.plickers.demo.plickersdemoapp.Fragment.QuestionFragment;
@@ -25,8 +23,13 @@ import com.plickers.demo.plickersdemoapp.R;
 
 import org.json.JSONException;
 
+/**
+ * Displays the tabs for viewing or editing(not supported in demo) the question the user
+ * selected in the previous activity.
+ */
 public class QuestionDetails extends AppCompatActivity {
 
+    private static final String ARG_SELECTED_QUESTION = "selectedQuestion";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -36,9 +39,8 @@ public class QuestionDetails extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private Question selectedQuestion;
-    private Choice[] choices;
-    private static final String ARG_SELECTED_QUESTION = "selectedQuestion";
+    private Question mSelectedQuestion;
+    private Choice[] mChoices;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -48,12 +50,13 @@ public class QuestionDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question_details);
-        this.selectedQuestion = getIntent().getParcelableExtra(ARG_SELECTED_QUESTION);
+        //Get the selected question
+        this.mSelectedQuestion = getIntent().getParcelableExtra(ARG_SELECTED_QUESTION);
 
-        try{
-            choices = Choice.parseChoices(this.selectedQuestion);
-        }
-        catch (JSONException je){
+        //Get the possible answer choices for the question
+        try {
+            mChoices = Choice.parseChoices(this.mSelectedQuestion);
+        } catch (JSONException je) {
             Log.e("JSON", je.toString());
         }
 
@@ -68,15 +71,16 @@ public class QuestionDetails extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        //Edit not supported in demo
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fabEdit);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, getResources().getString(R.string.edit_not_supported), Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Snackbar.make(view, getResources().getString(R.string.edit_not_supported),
+                        Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });
-       }
+    }
 
     /**
      * A placeholder fragment containing a simple view.
@@ -114,8 +118,6 @@ public class QuestionDetails extends AppCompatActivity {
     }
 
 
-
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -130,12 +132,13 @@ public class QuestionDetails extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            if(position == 0){
-                return QuestionFragment.newInstance(selectedQuestion, choices);
+            //If tab is on question, show the question and answers
+            if (position == 0) {
+                return QuestionFragment.newInstance(mSelectedQuestion, mChoices);
             }
-
-            if(position == 1){
-                return ResponsesFragment.newInstance(selectedQuestion, choices);
+            //If tab is on Responses, show the class stats
+            if (position == 1) {
+                return ResponsesFragment.newInstance(mSelectedQuestion, mChoices);
             }
 
             return PlaceholderFragment.newInstance(position + 1);

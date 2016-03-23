@@ -1,19 +1,16 @@
 package com.plickers.demo.plickersdemoapp.Activity;
 
-import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 import com.plickers.demo.plickersdemoapp.Fragment.QuestionListFragment;
@@ -23,6 +20,7 @@ import com.plickers.demo.plickersdemoapp.R;
 import java.util.ArrayList;
 
 /*
+Displays the History, Planned, and Create New tabs. The latter are not supported in the demo.
 The majority of this class remains untouched from the original Android template. Any changes
 have been commentated.
  */
@@ -32,7 +30,7 @@ public class ClassDetails extends AppCompatActivity {
     private static final String ARG_CLASSNAME = "className";
     private static final String ARG_QUESTIONS = "questions";
 
-    private ArrayList<Question> questions;
+    private ArrayList<Question> mQuestions;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -43,7 +41,7 @@ public class ClassDetails extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ProgressDialog pDialog;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -59,7 +57,7 @@ public class ClassDetails extends AppCompatActivity {
          */
         Bundle bundle = getIntent().getExtras();
         String className = bundle.getString(ARG_CLASSNAME);
-        this.questions = bundle.getParcelableArrayList(ARG_QUESTIONS);
+        this.mQuestions = bundle.getParcelableArrayList(ARG_QUESTIONS);
 
         //Set the toolbar to the class name
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,7 +76,6 @@ public class ClassDetails extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
     }
 
 
@@ -137,8 +134,9 @@ public class ClassDetails extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            if(position == 0){
-                return new QuestionListFragment().newInstance(questions);
+            // Return the QuestionListFragment if the tab is set to history
+            if (position == 0) {
+                return new QuestionListFragment().newInstance(mQuestions);
             }
             return PlaceholderFragment.newInstance(position + 1);
         }

@@ -15,21 +15,22 @@ import com.plickers.demo.plickersdemoapp.R;
 import java.util.ArrayList;
 
 /**
- * Created by Admin on 3/19/2016.
+ * Class was discarded - ListView is not well supported in ScrollView
  */
 public class ResponsesAdapter extends ArrayAdapter<Response> {
 
-    private final Context context;
-    private ArrayList<Response> data;
-    private final int layoutResourceId;
-    private final char correctAnswer;
+    private final Context mContext;
+    private ArrayList<Response> mData;
+    private final int mLayoutResourceId;
+    private final char mCorrectAnswer;
 
-    public ResponsesAdapter(Context context, int layoutResourceId, ArrayList<Response> data, char correctAnswer) {
+    public ResponsesAdapter(Context context, int layoutResourceId, ArrayList<Response> data,
+                            char correctAnswer) {
         super(context, layoutResourceId, data);
-        this.context = context;
-        this.data = data;
-        this.layoutResourceId = layoutResourceId;
-        this.correctAnswer = correctAnswer;
+        this.mContext = context;
+        this.mData = data;
+        this.mLayoutResourceId = layoutResourceId;
+        this.mCorrectAnswer = correctAnswer;
     }
 
     @Override
@@ -37,39 +38,35 @@ public class ResponsesAdapter extends ArrayAdapter<Response> {
         View row = convertView;
         ViewHolder holder = null;
 
-        if(row == null)
-        {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+            row = inflater.inflate(mLayoutResourceId, parent, false);
 
             holder = new ViewHolder();
-            holder.textView1 = (TextView)row.findViewById(R.id.studentResponse);
+            holder.textView1 = (TextView) row.findViewById(R.id.studentResponse);
             row.setTag(holder);
-        }
-        else
-        {
-            holder = (ViewHolder)row.getTag();
+        } else {
+            holder = (ViewHolder) row.getTag();
         }
 
 
-        Response response = data.get(position);
+        Response response = mData.get(position);
 
         holder.textView1.setText(response.getStudent() + " - " + response.getAnswer());
 
-        if(response.getAnswer() == correctAnswer){
-                holder.textView1.setBackgroundColor(ContextCompat.getColor(context, R.color.colorLightGreen));
-        }
-        else{
-                holder.textView1.setBackgroundColor(ContextCompat.getColor(context,R.color.colorLightRed));
+        if (response.getAnswer() == mCorrectAnswer) {
+            holder.textView1.setBackgroundColor(ContextCompat.getColor
+                    (mContext, R.color.colorLightGreen));
+        } else {
+            holder.textView1.setBackgroundColor(ContextCompat.getColor
+                    (mContext, R.color.colorLightRed));
         }
 
         return row;
     }
 
-    static class ViewHolder
-    {
+    static class ViewHolder {
         TextView textView1;
-        TextView textView2;
     }
 
 

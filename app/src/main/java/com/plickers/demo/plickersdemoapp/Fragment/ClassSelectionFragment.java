@@ -40,11 +40,10 @@ public class ClassSelectionFragment extends Fragment {
     private static final String ARG_CLASSNAME = "className";
     private static final String ARG_QUESTIONS = "questions";
 
-    private String className;
-    private ListView listView;
+    private String mClassName;
+    private ListView mListView;
 
-    private Context context;
-
+    private Context mContext;
 
     public ClassSelectionFragment() {
         // Required empty public constructor
@@ -56,7 +55,6 @@ public class ClassSelectionFragment extends Fragment {
      *
      * @return A new instance of fragment ClassSelectionFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ClassSelectionFragment newInstance() {
         ClassSelectionFragment fragment = new ClassSelectionFragment();
         return fragment;
@@ -82,8 +80,8 @@ public class ClassSelectionFragment extends Fragment {
     to launch into the appropriate activity
     @param view View that has the classListView list view
      */
-    private void addDemoClass(View view){
-        listView = (ListView) view.findViewById(R.id.classListView);
+    private void addDemoClass(View view) {
+        mListView = (ListView) view.findViewById(R.id.classListView);
 
         //Add only one class Demo 101 to the list of class
         ArrayList<String> classList = new ArrayList<>();
@@ -91,17 +89,17 @@ public class ClassSelectionFragment extends Fragment {
 
         //Set adapter to custom adapter
         ArrayAdapter<String> classArrayAdapter = new ArrayAdapter<>(
-                context, android.R.layout.simple_list_item_1, classList);
-        listView.setAdapter(classArrayAdapter);
+                mContext, android.R.layout.simple_list_item_1, classList);
+        mListView.setAdapter(classArrayAdapter);
 
         /*
         Potential logic concerning which class we would want to go into more depth about would be
         done here.
          */
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                className = listView.getItemAtPosition(position).toString();
+                mClassName = mListView.getItemAtPosition(position).toString();
                 String linkToClassroom = "http://plickers-interview.herokuapp.com/polls";
                 new retrieveClassroomJSON().execute(linkToClassroom);
             }
@@ -112,11 +110,12 @@ public class ClassSelectionFragment extends Fragment {
     Launches into the ClassDetails activity where the user can interact with the data
     I'm using bundle instead of intent.putExtra() to simulate a real world application.
     We might be potentially passing more information than the class name and questions.
+    @param questionArrayList    Arraylist that has all of the questions retrieved
     */
-    private void launchDetailsActivity(ArrayList<Question> questionArrayList){
-        Intent intent = new Intent(context, ClassDetails.class);
+    private void launchDetailsActivity(ArrayList<Question> questionArrayList) {
+        Intent intent = new Intent(mContext, ClassDetails.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_CLASSNAME, this.className);
+        bundle.putString(ARG_CLASSNAME, this.mClassName);
         bundle.putParcelableArrayList(ARG_QUESTIONS, questionArrayList);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -124,7 +123,7 @@ public class ClassSelectionFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        this.context = context;
+        this.mContext = context;
         super.onAttach(context);
     }
 
@@ -138,23 +137,26 @@ public class ClassSelectionFragment extends Fragment {
     Retrieves the JSON by running a task in the background
     */
     private class retrieveClassroomJSON extends AsyncTask<String, Void, JSONArray> {
-        private ProgressDialog pDialog;
+        private ProgressDialog mProgressDialog;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             //Stop User Interaction while loading
-            pDialog  = new ProgressDialog(context);
-            pDialog.setMessage("Getting Data ...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
-            pDialog.show();
+            mProgressDialog = new ProgressDialog(mContext);
+            mProgressDialog.setMessage("Getting Data ...");
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setCancelable(true);
+            mProgressDialog.show();
 
         }
+
         protected JSONArray doInBackground(String... urls) {
             //Read the json
             JSONReader jsonReader = new JSONReader();
             return jsonReader.readArray(urls[0]);
         }
+
         protected void onPostExecute(JSONArray jsonArray) {
             try {
                 //Parse the json
@@ -162,7 +164,7 @@ public class ClassSelectionFragment extends Fragment {
                 ArrayList<Question> questionArrayList = jsonParser.parseJSONfile(jsonArray);
 
                 //Go to the next activity with the received questions
-                pDialog.dismiss(); //Remove the loading screen
+                mProgressDialog.dismiss(); //Remove the loading screen
                 launchDetailsActivity(questionArrayList);
             } catch (JSONException je) {
                 Log.e("ERROR", "getJsonInfo: ", je);

@@ -7,11 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
- * Created by Ron on 3/18/2016.
- *
- * The purpose of this class Choice to have all the details and data related to the individual question
- * in one object
- *
+ * Has all the details and data related to the individual question in one object
  */
 public class Choice implements Parcelable {
 
@@ -19,37 +15,37 @@ public class Choice implements Parcelable {
     private Boolean correct;
     private char letter;
 
-    public Choice(){
+    public Choice() {
 
     }
 
-    public Choice(String body, Boolean correct, char letter){
+    public Choice(String body, Boolean correct, char letter) {
         this.body = body;
         this.correct = correct;
         this.letter = letter;
     }
 
-    public String getBody(){
+    public String getBody() {
         return this.body;
     }
 
-    public void setBody(String body){
+    public void setBody(String body) {
         this.body = body;
     }
 
-    public Boolean getCorrect(){
+    public Boolean getCorrect() {
         return this.correct;
     }
 
-    public void setCorrect(Boolean correct){
+    public void setCorrect(Boolean correct) {
         this.correct = correct;
     }
 
-    public char getLetter(){
+    public char getLetter() {
         return this.letter;
     }
 
-    public void setLetter(char letter){
+    public void setLetter(char letter) {
         this.letter = letter;
     }
 
@@ -58,21 +54,21 @@ public class Choice implements Parcelable {
         Choice[] choicesArray = new Choice[choices.length()];
 
         //Create the choices
-        for(int i = 0; i<choices.length(); i++){
+        for (int i = 0; i < choices.length(); i++) {
             String body = choices.getJSONObject(i).getString("body");
             Boolean answer = choices.getJSONObject(i).getBoolean("correct");
             int letter = 'A' + i; //Assign a character letter for the answer
-            choicesArray[i] = new Choice(body,answer, (char)letter);
+            choicesArray[i] = new Choice(body, answer, (char) letter);
         }
 
         /*
         Put one HARDCODED answer if there were no choices uploaded
          */
-        if(choices.length() == 0){
+        if (choices.length() == 0) {
             String body = "No choices were uploaded"; //Hardcoded answer
             Boolean answer = null; //null for correctness
             Choice[] tempChoicesArray = new Choice[1]; //One answer
-            tempChoicesArray[0] = new Choice(body,answer, ' ');
+            tempChoicesArray[0] = new Choice(body, answer, ' ');
             choicesArray = tempChoicesArray;
         }
 

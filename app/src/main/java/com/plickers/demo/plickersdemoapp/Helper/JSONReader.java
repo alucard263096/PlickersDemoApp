@@ -14,15 +14,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by Admin on 3/19/2016.
- * This class is used to retrieve the JSON data from an URL. It works by retrieving the JSON data
+ * Retrieves the JSON data from an URL. It works by retrieving the JSON data
  * in a buffered reader and passing the output to a StringBuilder. The StringBuilder then passing
  * that string into a JSONArray (or JSONObject) to create the returning object.
  */
 public class JSONReader {
 
     //Empty constructor
-    public JSONReader(){
+    public JSONReader() {
 
     }
 
@@ -32,7 +31,7 @@ public class JSONReader {
     @param jsonURL  The url of the JSON
     @return         The JSONArray located at specified url
      */
-    public JSONArray readArray(String jsonURL){
+    public JSONArray readArray(String jsonURL) {
         InputStream inputStream = null;
         String result = null;
         HttpURLConnection urlConnection;

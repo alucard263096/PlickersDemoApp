@@ -15,20 +15,20 @@ import com.plickers.demo.plickersdemoapp.R;
 import java.util.ArrayList;
 
 /**
- * Created by Admin on 3/19/2016.
+ * Class was discarded - ListView is not well supported in ScrollView
  */
 public class ChoicesAdapter extends ArrayAdapter<Choice> {
 
-    private final Context context;
-    private ArrayList<Choice> data;
-    private final int layoutResourceId;
+    private final Context mContext;
+    private ArrayList<Choice> mData;
+    private final int mLayoutResourceId;
 
 
     public ChoicesAdapter(Context context, int layoutResourceId, ArrayList<Choice> data) {
         super(context, layoutResourceId, data);
-        this.context = context;
-        this.data = data;
-        this.layoutResourceId = layoutResourceId;
+        this.mContext = context;
+        this.mData = data;
+        this.mLayoutResourceId = layoutResourceId;
     }
 
     @Override
@@ -36,45 +36,41 @@ public class ChoicesAdapter extends ArrayAdapter<Choice> {
         View row = convertView;
         ViewHolder holder = null;
 
-        if(row == null)
-        {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+            row = inflater.inflate(mLayoutResourceId, parent, false);
 
             holder = new ViewHolder();
-            holder.textView1 = (TextView)row.findViewById(R.id.questionChoice);
+            holder.textView1 = (TextView) row.findViewById(R.id.questionChoice);
             row.setTag(holder);
-        }
-        else
-        {
-            holder = (ViewHolder)row.getTag();
+        } else {
+            holder = (ViewHolder) row.getTag();
         }
 
 
-        Choice choice = data.get(position);
+        Choice choice = mData.get(position);
 
         holder.textView1.setText(choice.getLetter() + " : " + choice.getBody());
 
 
-        if(choice.getCorrect() == null) {} //No color if no answer
-        else if(choice.getCorrect()){
+        if (choice.getCorrect() == null) {
+        } //No color if no answer
+        else if (choice.getCorrect()) {
             //Green if right
             holder.textView1.setBackgroundColor(ContextCompat.getColor
-                    (context, R.color.colorLightGreen));
-        }
-        else{
+                    (mContext, R.color.colorLightGreen));
+        } else {
             //Red if wrong
-            holder.textView1.setBackgroundColor(ContextCompat.getColor(context,R.color.colorLightRed));
+            holder.textView1.setBackgroundColor(ContextCompat.getColor
+                    (mContext, R.color.colorLightRed));
         }
 
 
         return row;
     }
 
-    static class ViewHolder
-    {
+    static class ViewHolder {
         TextView textView1;
-        TextView textView2;
     }
 
 

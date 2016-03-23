@@ -20,32 +20,29 @@ import com.plickers.demo.plickersdemoapp.Objects.Choice;
 import com.plickers.demo.plickersdemoapp.Objects.Question;
 import com.plickers.demo.plickersdemoapp.R;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
 /**
+ * Goes into a detailed view of the question displaying the body of the question and the potential
+ * mChoices. Components of this class remains untouched from the original Android template.
+ * Any changes have been commentated
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link QuestionFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link QuestionFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Use the {@link QuestionFragment#newInstance} factory method to create an instance of
+ * this fragment.
  */
 public class QuestionFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_SELECTED_QUESTION = "selectedQuestion";
     private static final String ARG_CHOICES = "choices";
 
-    // TODO: Rename and change types of parameters
-    private Context context;
-    private Question selectedQuestion;
-    private Choice[] choices;
-    private TextView questionData;
-    private GifImageView questionImage;
+    private Context mContext;
+    private Question mSelectedQuestion;
+    private Choice[] mChoices;
+    private TextView mQuestionData;
+    private GifImageView mQuestionImage;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -56,10 +53,9 @@ public class QuestionFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param selectedQuestion The question that was selected by the user.
-     * @param choices A list of possible answer choices.
+     * @param choices          A list of possible answer mChoices.
      * @return A new instance of fragment QuestionFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static QuestionFragment newInstance(Question selectedQuestion, Choice[] choices) {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
@@ -73,9 +69,9 @@ public class QuestionFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            selectedQuestion = getArguments().getParcelable(ARG_SELECTED_QUESTION);
+            mSelectedQuestion = getArguments().getParcelable(ARG_SELECTED_QUESTION);
             Parcelable[] parcelableArray = getArguments().getParcelableArray(ARG_CHOICES);
-            choices = Arrays.copyOf(parcelableArray, parcelableArray.length, Choice[].class);
+            mChoices = Arrays.copyOf(parcelableArray, parcelableArray.length, Choice[].class);
         }
     }
 
@@ -86,16 +82,15 @@ public class QuestionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_question, container, false);
 
         //Set the question Body
-        questionData = (TextView) view.findViewById(R.id.questionTextView);
-        questionData.setText(selectedQuestion.getBody());
+        mQuestionData = (TextView) view.findViewById(R.id.questionTextView);
+        mQuestionData.setText(mSelectedQuestion.getBody());
 
         //Set the question Image
-        questionImage = (GifImageView) view.findViewById(R.id.questionImageView);
-        new DownloadImageTask(questionImage)
-                .execute(selectedQuestion.getImage());
+        mQuestionImage = (GifImageView) view.findViewById(R.id.questionImageView);
+        new DownloadImageTask(mQuestionImage)
+                .execute(mSelectedQuestion.getImage());
 
-        questionImage.startAnimation();
-        //Add textviews for each of the choices
+        //Add textviews for each of the mChoices
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.questionLinearLayout);
         addChoices(linearLayout);
 
@@ -103,29 +98,29 @@ public class QuestionFragment extends Fragment {
     }
 
     /*
-    Adds text views for each of the choices that are potential answers to the question
-    @param linearLayout The layout which the textviews are appended to
+    Adds text views for each of the mChoices that are potential answers to the question
+    @param linearLayout The layout which the TextViews are appended to
      */
-    private void addChoices(LinearLayout linearLayout){
-        for( int i = 0; i < choices.length; i++ )
-        {
-            TextView textView = new TextView(context);
+    private void addChoices(LinearLayout linearLayout) {
+        for (int i = 0; i < mChoices.length; i++) {
+            TextView textView = new TextView(mContext);
 
             //Set the color of the textview
-            if(choices[i].getCorrect() == null) {} //No color if no answer
-            else if(choices[i].getCorrect()){
+            if (mChoices[i].getCorrect() == null) {
+            } //No color if no answer
+            else if (mChoices[i].getCorrect()) {
                 //Green if right
                 textView.setBackgroundColor(ContextCompat.getColor
-                        (context, R.color.colorLightGreen));
-            }
-            else{
+                        (mContext, R.color.colorLightGreen));
+            } else {
                 //Red if wrong
-                textView.setBackgroundColor(ContextCompat.getColor(context,R.color.colorLightRed));
+                textView.setBackgroundColor(ContextCompat.getColor(mContext,
+                        R.color.colorLightRed));
             }
 
             textView.setTextSize(15);
             textView.setPadding(10, 10, 10, 10);
-            String answer = choices[i].getLetter() + ": " + choices[i].getBody(); //Ex) A: Answer
+            String answer = mChoices[i].getLetter() + ": " + mChoices[i].getBody(); //Ex) A: Answer
             textView.setText(answer);
 
             linearLayout.addView(textView);
@@ -135,7 +130,7 @@ public class QuestionFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        this.context = context;
+        this.mContext = context;
         super.onAttach(context);
     }
 
@@ -145,14 +140,14 @@ public class QuestionFragment extends Fragment {
     }
 
 
-
     /*
     Class to download the question images
-    Sources: http://stackoverflow.com/questions/2471935/how-to-load-an-imageview-by-url-in-android
+    Sources:
+    http://stackoverflow.com/questions/2471935/how-to-load-an-imageview-by-url-in-android
     https://github.com/felipecsl/GifImageView
      */
     private class DownloadImageTask extends AsyncTask<String, Void, byte[]> {
-        GifImageView bmImage;
+        GifImageView mGifImageView;
 
 
         private byte[] readBytes(InputStream inputStream) throws IOException {
@@ -173,8 +168,8 @@ public class QuestionFragment extends Fragment {
             return byteBuffer.toByteArray();
         }
 
-        public DownloadImageTask(GifImageView bmImage) {
-            this.bmImage = bmImage;
+        public DownloadImageTask(GifImageView mGifImageView) {
+            this.mGifImageView = mGifImageView;
         }
 
         protected byte[] doInBackground(String... urls) {
@@ -191,16 +186,14 @@ public class QuestionFragment extends Fragment {
         }
 
         protected void onPostExecute(byte[] result) {
-            try{//Try to set the gif
-                bmImage.setBytes(result);
-                bmImage.startAnimation();
-            }
-            catch (ArithmeticException ae){ //If it is not a gif
-                Bitmap bitmap = BitmapFactory.decodeByteArray(result , 0, result.length);
-                bmImage.setImageBitmap(bitmap);
-            }
-            catch ( NullPointerException npe ){ //No byte data means no image
-                bmImage.setImageBitmap(null);
+            try {//Try to set the gif
+                mGifImageView.setBytes(result);
+                mGifImageView.startAnimation();
+            } catch (ArithmeticException ae) { //If it is not a gif
+                Bitmap bitmap = BitmapFactory.decodeByteArray(result, 0, result.length);
+                mGifImageView.setImageBitmap(bitmap);
+            } catch (NullPointerException npe) { //No byte data means no image
+                mGifImageView.setImageBitmap(null);
             }
 
         }

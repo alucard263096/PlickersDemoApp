@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 /**
  * Parses the JSON file to create the Questions and return them back in an ArrayList
- *
  */
 public class JSONParser {
 
@@ -18,7 +17,7 @@ public class JSONParser {
 
     }
 
-    public ArrayList<Question> parseJSONfile(JSONArray jsonArray) throws JSONException{
+    public ArrayList<Question> parseJSONfile(JSONArray jsonArray) throws JSONException {
         ArrayList<Question> questionArrayList = new ArrayList<>();
         JSONArray jsonData = jsonArray;
                 /*
@@ -43,13 +42,13 @@ public class JSONParser {
 
             String body = jsonData.getJSONObject(i).getJSONObject("question").
                     getString("body");
-            if(body.isEmpty()){
+            if (body.isEmpty()) {
                 body = "Please open question to view details";
             }
 
             JSONArray choices = jsonData.getJSONObject(i).getJSONObject("question").
                     getJSONArray("choices"); //Will have to convert to String and then
-                    // create choice objects when the time is right
+            // create choice objects when the time is right
 
             JSONArray responses = jsonData.getJSONObject(i).getJSONArray("responses");
 
@@ -59,7 +58,7 @@ public class JSONParser {
                 image = jsonData.getJSONObject(i).getJSONObject("question").getString("image");
             } catch (JSONException je) {
                 image = "none"; //I hardcoded it to none, but we would have a default image for when
-                                //there is no image available.
+                //there is no image available.
             }
 
             Question question = new Question(sectionId, questionId, modified, body,

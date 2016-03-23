@@ -14,19 +14,19 @@ import com.plickers.demo.plickersdemoapp.R;
 import java.util.ArrayList;
 
 /**
- * Created by Admin on 3/19/2016.
+ * Used when fragment is displaying a list of the questions to the user.
  */
 public class QuestionAdapter extends ArrayAdapter<Question> {
 
-    private final Context context;
-    private ArrayList<Question> data;
-    private final int layoutResourceId;
+    private final Context mContext;
+    private ArrayList<Question> mData;
+    private final int mLayoutResourceId;
 
     public QuestionAdapter(Context context, int layoutResourceId, ArrayList<Question> data) {
         super(context, layoutResourceId, data);
-        this.context = context;
-        this.data = data;
-        this.layoutResourceId = layoutResourceId;
+        this.mContext = context;
+        this.mData = data;
+        this.mLayoutResourceId = layoutResourceId;
     }
 
     @Override
@@ -34,22 +34,19 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
         View row = convertView;
         ViewHolder holder = null;
 
-        if(row == null)
-        {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-            row = inflater.inflate(layoutResourceId, parent, false);
+        if (row == null) {
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+            row = inflater.inflate(mLayoutResourceId, parent, false);
 
             holder = new ViewHolder();
-            holder.textView1 = (TextView)row.findViewById(R.id.body);
-            holder.textView2 = (TextView)row.findViewById(R.id.modified);
+            holder.textView1 = (TextView) row.findViewById(R.id.body);
+            holder.textView2 = (TextView) row.findViewById(R.id.modified);
             row.setTag(holder);
-        }
-        else
-        {
-            holder = (ViewHolder)row.getTag();
+        } else {
+            holder = (ViewHolder) row.getTag();
         }
 
-        Question question = data.get(position);
+        Question question = mData.get(position);
 
         holder.textView1.setText(question.getBody());
         holder.textView2.setText(question.getLast_modified().
@@ -58,14 +55,13 @@ public class QuestionAdapter extends ArrayAdapter<Question> {
         return row;
     }
 
-    static class ViewHolder
-    {
+    static class ViewHolder {
         TextView textView1;
         TextView textView2;
     }
 
-    public void sortData(ArrayList<Question> data){
-        this.data = data;
+    public void sortData(ArrayList<Question> data) {
+        this.mData = data;
         notifyDataSetChanged();
     }
 
